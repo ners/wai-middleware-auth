@@ -27,13 +27,11 @@ module Network.Wai.Middleware.Auth.Provider
 
 import           Blaze.ByteString.Builder      (toByteString)
 import           Control.Arrow                 (second)
-import           Data.Aeson                    (FromJSON (..), Object,
-                                                Result (..), Value)
-import           Data.Aeson.Types              (parseEither)
+import           Data.Aeson                    (FromJSON (..), Result (..), Value)
+import           Data.Aeson.Types              (Parser, parseEither)
 
 import           Data.Aeson.TH                 (defaultOptions, deriveJSON,
                                                 fieldLabelModifier)
-import           Data.Aeson.Types              (Parser)
 import           Data.Binary                   (Binary)
 import qualified Data.ByteString               as S
 import qualified Data.ByteString.Builder       as B

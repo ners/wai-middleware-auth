@@ -27,13 +27,11 @@ module Network.Wai.Middleware.Auth.OIDC
 import           Control.Applicative                  ((<|>))
 import qualified Crypto.JOSE                          as JOSE
 import qualified Crypto.JWT                           as JWT
-import           Control.Monad.Except                 (runExceptT)
 import           Data.Aeson                           (FromJSON(parseJSON),
                                                        withObject, (.:), (.!=))
 import qualified Data.ByteString.Char8                as S8
 import           Data.Function                        ((&))
 import qualified Data.Time.Clock                      as Clock
-import           Data.Traversable                     (for)
 import qualified Data.Text                            as T
 import qualified Data.Text.Lazy                       as TL
 import qualified Data.Text.Lazy.Encoding              as TLE
@@ -209,7 +207,7 @@ fetchJWKSet jwkSetEndpoint = do
 
 mkOauth2 :: OpenIDConnect -> Maybe (Text.Hamlet.Render ProviderUrl) -> IO OA2.OAuth2
 mkOauth2 OpenIDConnect {..} renderUrl = do
-  Just callbackURI <- for renderUrl $ \render -> parseAbsoluteURI $ render (ProviderUrl ["complete"]) []
+  callbackURI <- maybe (pure undefined) (\render -> parseAbsoluteURI $ render (ProviderUrl ["complete"]) []) renderUrl
   pure OA2.OAuth2
         { oauth2ClientId = oidcClientId
         , oauth2ClientSecret = oidcClientSecret
@@ -219,7 +217,7 @@ mkOauth2 OpenIDConnect {..} renderUrl = do
         }
 
 validateIdToken :: OpenIDConnect -> OA2.IdToken -> IO (Either JWT.JWTError JWT.ClaimsSet)
-validateIdToken oidc (OA2.IdToken idToken) = runExceptT $ do
+validateIdToken oidc (OA2.IdToken idToken) = JOSE.runJOSE $ do
   signedJwt <- JOSE.decodeCompact (TLE.encodeUtf8 $ TL.fromStrict idToken)
   JWT.verifyClaims (validationSettings oidc) (oidcJwkSet oidc) signedJwt
 
