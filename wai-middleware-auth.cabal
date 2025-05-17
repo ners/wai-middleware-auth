@@ -38,7 +38,7 @@ library
                      , clientsession
                      , cookie               >= 0.4.2
                      , exceptions
-                     , hoauth2              ^>= 2.1
+                     , hoauth2              >= 2.3 && < 3
                      , http-client
                      , http-client-tls
                      , http-conduit

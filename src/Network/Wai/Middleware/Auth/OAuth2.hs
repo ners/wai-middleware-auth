@@ -85,10 +85,10 @@ instance AuthProvider OAuth2 where
     let oauth2 =
           OA2.OAuth2
           { oauth2ClientId = getClientId oa2ClientId
-          , oauth2ClientSecret = Just $ getClientSecret oa2ClientSecret
+          , oauth2ClientSecret = getClientSecret oa2ClientSecret
           , oauth2AuthorizeEndpoint = authEndpointURI
           , oauth2TokenEndpoint = accessTokenEndpointURI
-          , oauth2RedirectUri = Just callbackURI
+          , oauth2RedirectUri = callbackURI
           }
     man <- getGlobalManager
     oauth2Login
@@ -112,16 +112,16 @@ instance AuthProvider OAuth2 where
           let oauth2 =
                 OA2.OAuth2
                 { oauth2ClientId = getClientId oa2ClientId
-                , oauth2ClientSecret = Just (getClientSecret oa2ClientSecret)
+                , oauth2ClientSecret = getClientSecret oa2ClientSecret
                 , oauth2AuthorizeEndpoint = authEndpointURI
                 , oauth2TokenEndpoint = accessTokenEndpointURI
-                -- Setting callback endpoint to `Nothing` below is a lie.
+                -- Setting the callback endpoint here is a lie.
                 -- We do have a callback endpoint but in this context
                 -- don't have access to the function that can render it.
                 -- We get away with this because the callback endpoint is
                 -- not needed for obtaining a refresh token, the only
                 -- way we use the config here constructed.
-                , oauth2RedirectUri = Nothing
+                , oauth2RedirectUri = undefined
                 }
           man <- getGlobalManager
           rRes <- refreshTokens tokens man oauth2

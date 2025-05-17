@@ -209,10 +209,10 @@ fetchJWKSet jwkSetEndpoint = do
 
 mkOauth2 :: OpenIDConnect -> Maybe (Text.Hamlet.Render ProviderUrl) -> IO OA2.OAuth2
 mkOauth2 OpenIDConnect {..} renderUrl = do
-  callbackURI <- for renderUrl $ \render -> parseAbsoluteURI $ render (ProviderUrl ["complete"]) []
+  Just callbackURI <- for renderUrl $ \render -> parseAbsoluteURI $ render (ProviderUrl ["complete"]) []
   pure OA2.OAuth2
         { oauth2ClientId = oidcClientId
-        , oauth2ClientSecret = Just oidcClientSecret
+        , oauth2ClientSecret = oidcClientSecret
         , oauth2AuthorizeEndpoint = authorizationEndpoint oidcMetadata
         , oauth2TokenEndpoint = tokenEndpoint oidcMetadata
         , oauth2RedirectUri = callbackURI
