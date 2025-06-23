@@ -51,8 +51,7 @@ mkGoogleProvider clientId clientSecret emailWhiteList mProviderInfo =
     defProviderInfo =
       ProviderInfo
       { providerTitle = "Google"
-      , providerLogoUrl =
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/200px-Google_%22G%22_Logo.svg.png"
+      , providerLogoUrl = "https://www.google.com/favicon.ico"
       , providerDescr = "Use your Google account to access this page."
       }
 
