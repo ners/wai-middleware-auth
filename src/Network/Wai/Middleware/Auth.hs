@@ -41,7 +41,7 @@ import           Data.Version                         (Version)
 import           Foreign.C.Types                      (CTime (..))
 import           GHC.Generics                         (Generic)
 import           Network.HTTP.Types                   (Header, status200,
-                                                       status303, status404,
+                                                       status303, status401, status404,
                                                        status501)
 import           Network.Wai                          (mapResponseHeaders,
                                                        Middleware, Request,
@@ -72,6 +72,7 @@ data AuthSettings = AuthSettings
   , asGetAppRoot        :: Request -> IO T.Text
   , asSessionAge        :: Int -- ^ default: 3600 seconds (1 hour)
   , asAuthPrefix        :: T.Text -- ^ default: _auth_middleware
+  , asApiPrefix         :: T.Text -- ^ default: api
   , asStateKey          :: S.ByteString -- ^ Cookie name, default: auth_state
   , asProviders         :: Providers
   , asProvidersTemplate :: Maybe T.Text -> Render Provider -> Providers -> Builder
@@ -88,6 +89,7 @@ defaultAuthSettings =
   , asGetAppRoot = return <$> smartAppRoot
   , asSessionAge = 3600
   , asAuthPrefix = "_auth_middleware"
+  , asApiPrefix = "api"
   , asStateKey = "auth_state"
   , asProviders = HM.empty
   , asProvidersTemplate = providersTemplate
@@ -191,6 +193,9 @@ mkAuthMiddleware AuthSettings {..} = do
   let enforceLogin protectedPath req respond =
         case pathInfo req of
           (prefix:rest)
+            | prefix == asApiPrefix ->
+                respond $ responseBuilder status401 []
+                "Authorization required to access this api endpoint"
             | prefix == asAuthPrefix ->
               case rest of
                 [] ->
