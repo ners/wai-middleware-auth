@@ -216,14 +216,14 @@ mkAuthMiddleware AuthSettings {..} = do
                            "Redirecting to Login page"
                     _ ->
                       respond $
-                      responseBuilder status200 [] $
+                      responseBuilder status200 [("Content-Type", "text/html")] $
                       asProvidersTemplate Nothing authRouteRender asProviders
                 (providerName:pathSuffix)
                   | Just provider <- HM.lookup providerName asProviders -> do
                     appRoot <- asGetAppRoot req
                     let onFailure status errMsg =
                           return $
-                          responseBuilder status [] $
+                          responseBuilder status [("Content-Type", "text/html")] $
                           asProvidersTemplate
                             (Just $ decodeUtf8With lenientDecode errMsg)
                             authRouteRender
