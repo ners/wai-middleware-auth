@@ -1,6 +1,7 @@
-{-# LANGUAGE FlexibleInstances   #-}     
-{-# LANGUAGE RecordWildCards   #-}     
+{-# LANGUAGE FlexibleInstances   #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies   #-}
 -- | An OpenID connect provider.
 --
 -- OpenID Connect is a simple identity layer on top of the OAuth2 protocol.

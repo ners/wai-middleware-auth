@@ -25,7 +25,7 @@ import           GHC.Exts                               (fromString)
 import qualified Network.HTTP.Types.Status              as Status
 import qualified Network.OAuth.OAuth2                   as OA2
 import qualified Network.Wai as Wai
-import           Network.Wai.Auth.Internal              (Metadata(..))
+import           Network.Wai.Auth.Internal              (Metadata(..), fixRawResponse)
 import           Network.Wai.Test                       (Session, SResponse,
                                                          defaultRequest,
                                                          request, setPath)
@@ -127,8 +127,11 @@ fakeProvider' configRef req respond = do
           OA2.idToken =
             if returnIdToken config
               then Just (OA2.IdToken idToken)
-              else Nothing
+              else Nothing,
+          OA2.scope = Nothing,
+          OA2.rawResponse = mempty
         }
+        & fixRawResponse
         & Aeson.encode
         & Wai.responseLBS Status.ok200 [("Content-Type", "application/json")]
         & respond

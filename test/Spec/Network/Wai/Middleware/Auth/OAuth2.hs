@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedRecordDot #-}
 
 module Spec.Network.Wai.Middleware.Auth.OAuth2 (tests) where
 
-import           Control.Monad                          (void)
 import           Data.Function                          ((&))
 import qualified Data.Text                              as T
 import qualified Data.Text.Encoding                     as TE
@@ -96,7 +96,9 @@ tests = testGroup "Network.Wai.Auth.OAuth2"
   ]
 
 createSession :: Session ()
-createSession = void $ get "/prefix/oauth2/complete?code=1234"
+createSession = do
+    response <- get "/prefix/oauth2/complete?code=1234"
+    assertStatus 303 response
 
 authSettings :: T.Text -> Auth.AuthSettings
 authSettings host =

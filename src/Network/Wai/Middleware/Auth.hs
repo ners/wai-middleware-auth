@@ -282,7 +282,7 @@ mkAuthMiddleware AuthSettings {..} = do
     case authState of
       Just (AuthLoggedIn user) ->
         let providerName = decodeUtf8With lenientDecode (authProviderName user)
-        in case HM.lookup providerName asProviders of        
+        in case HM.lookup providerName asProviders of
           Nothing ->
             -- We can no longer find the provider the user originally
             -- authenticated with, and as a result have no way to check if the
